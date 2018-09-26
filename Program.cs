@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.IO;
 using System.Linq;
 
@@ -6,9 +6,10 @@ namespace FileGenerator
 {
     class Program
     {
-        private const Int32 FileCountPerDir = 100;
-        private const Int32 DirCount = 1000;
-        private const Int32 FileMaxSize = 8_388_608;
+        private const Int32 FileCountPerDir = 400;
+        private const Int32 DirLevel = 2;
+        private const Int32 DirCountPerDir = 5;
+        private const Int32 FileMaxSizeBytes = 4_194_304;
 
         static void Main(string[] args)
         {
