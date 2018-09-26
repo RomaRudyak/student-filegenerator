@@ -22,17 +22,45 @@ namespace FileGenerator
 
         private static void GenerateTestSet(string dir)
         {
-            throw new NotImplementedException();
+            GenerateDirTree(dir, 0);
+        }
+
+        private static void GenerateDirTree(string dir, int level)
+        {
+            if (level > DirLevel)
+            {
+                return;
+            }
+
+            CreateFiles(dir);
+
+            level++;
+
+            for (int i = 0; i < DirCountPerDir; i++)
+            {
+                var current = Path.Combine(dir, $"dir{i}");
+                Directory.CreateDirectory(current);
+                GenerateDirTree(current, level);
+            }
         }
 
         private static void CreateFiles(string dir)
         {
-            
+            for (int i = 0; i < FileCountPerDir; i++)
+            {
+                var name = Path.Combine(dir, $"file{i}.txt");
+                Random random = new Random();
+
+                var content = new Byte[random.Next(FileMaxSizeBytes)];
+                random.NextBytes(content);
+                File.WriteAllBytes(name, content);
+                Console.WriteLine(name);
+            }
         }
 
         private static void CreateDirIfNeeded(string dir)
         {
-            if(Directory.Exists(dir))
+            if (Directory.Exists(dir))
             {
                 return;
             }
