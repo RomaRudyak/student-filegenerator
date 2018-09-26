@@ -11,9 +11,10 @@ namespace FileGenerator
         private const Int32 DirCountPerDir = 5;
         private const Int32 FileMaxSizeBytes = 4_194_304;
 
+
         static void Main(string[] args)
         {
-            var dir = args.FirstOrDefault();
+            var dir = args.FirstOrDefault() ?? throw new InvalidOperationException("Specify output dir");
 
             CreateDirIfNeeded(dir);
             GenerateTestSet(dir);
