@@ -4,7 +4,22 @@ Small util for generation of test data set for Practice with finding duplicate f
 
 ## Requirements
 
-- [dotnetcore2.1 sdk](https://www.microsoft.com/net/download)
+- [net7.0 sdk](https://www.microsoft.com/net/download)
+
+## Tool API
+```bash
+Usage:
+  FileGenerator [options]
+
+Options:
+  --out <out> (REQUIRED)           Output directory where files will be generated.
+  --dir-depth <dir-depth>          Number of level for sub dirs [default: 2]
+  --dir-number <dir-number>        Number of dirs per dir [default: 5]
+  --file-number <file-number>      Number of files per dir [default: 400]
+  --file-max-size <file-max-size>  File byte maximum size for generation [default: 4194304]
+  --version                        Show version information
+  -?, -h, --help                   Show help and usage information
+```
 
 ## Build
 
@@ -18,6 +33,6 @@ dotnet build
 
 ```bash
 
-dotnet run ./OUT_DIR
+dotnet run -- -h
 
 ```
