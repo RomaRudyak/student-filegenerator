@@ -1,0 +1,12 @@
+{
+  "profiles": {
+    "FileGenerator": {
+      "commandName": "Project",
+      "commandLineArgs": "-h"
+    },
+    "FileGenerator - generate": {
+      "commandName": "Project",
+      "commandLineArgs": "--out data --file-number 10 --file-max-size 5 --dir-number 2"
+    }
+  }
+}

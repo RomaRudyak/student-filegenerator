@@ -1,71 +1,58 @@
-using System;
-using System.IO;
-using System.Linq;
+using FileGenerator;
+using System.CommandLine;
 
-namespace FileGenerator
+Option<string> outOption = new(
+    name: "--out",
+    description: "Output directory where files will be generated.")
 {
-    class Program
+    IsRequired = true,
+};
+
+Option<int> fileCountPerDirOption = new(
+    name: "--file-number",
+    getDefaultValue: () => 400,
+    description: "Number of files per dir");
+
+Option<int> fileMaxSizeOption = new(
+    name: "--file-max-size",
+    getDefaultValue: () => 4_194_304,
+    description: "File byte maximum size for generation");
+
+Option<int> dirLevelOptions = new(
+    name: "--dir-depth",
+    getDefaultValue: () => 2,
+    description: "Number of level for sub dirs");
+
+Option<int> dirCountPerDirOptions = new(
+    name: "--dir-number",
+    getDefaultValue: () => 5,
+    description: "Number of dirs per dir");
+
+RootCommand rootCommand = new(
+    description: "Small util for generation of rundom test data set for Practice with finding duplicate files")
+{
+    outOption,
+    dirLevelOptions,
+    dirCountPerDirOptions,
+    fileCountPerDirOption,
+    fileMaxSizeOption,
+};
+
+rootCommand.SetHandler((dir, level, dirPerDir, filePerDir, fileSize) =>
+{
+    Generator generator = new()
     {
-        private const Int32 FileCountPerDir = 400;
-        private const Int32 DirLevel = 2;
-        private const Int32 DirCountPerDir = 5;
-        private const Int32 FileMaxSizeBytes = 4_194_304;
+        DirLevel = level,
+        DirCountPerDir = dirPerDir,
+        FileCountPerDir = filePerDir,
+        FileMaxSizeBytes = fileSize,
+    };
+    generator.Generate(dir);
+},
+outOption,
+dirLevelOptions,
+dirCountPerDirOptions,
+fileCountPerDirOption,
+fileMaxSizeOption);
 
-
-        static void Main(string[] args)
-        {
-            var dir = args.FirstOrDefault() ?? throw new InvalidOperationException("Specify output dir");
-
-            CreateDirIfNeeded(dir);
-            GenerateTestSet(dir);
-        }
-
-        private static void GenerateTestSet(string dir)
-        {
-            GenerateDirTree(dir, 0);
-        }
-
-        private static void GenerateDirTree(string dir, int level)
-        {
-            if (level > DirLevel)
-            {
-                return;
-            }
-
-            CreateFiles(dir);
-
-            level++;
-
-            for (int i = 0; i < DirCountPerDir; i++)
-            {
-                var current = Path.Combine(dir, $"dir{i}");
-                Directory.CreateDirectory(current);
-                GenerateDirTree(current, level);
-            }
-        }
-
-        private static void CreateFiles(string dir)
-        {
-            for (int i = 0; i < FileCountPerDir; i++)
-            {
-                var name = Path.Combine(dir, $"file{i}.txt");
-                Random random = new Random();
-
-                var content = new Byte[random.Next(FileMaxSizeBytes)];
-                random.NextBytes(content);
-                File.WriteAllBytes(name, content);
-                Console.WriteLine(name);
-            }
-        }
-
-        private static void CreateDirIfNeeded(string dir)
-        {
-            if (Directory.Exists(dir))
-            {
-                return;
-            }
-
-            Directory.CreateDirectory(dir);
-        }
-    }
-}
+await rootCommand.InvokeAsync(args);
